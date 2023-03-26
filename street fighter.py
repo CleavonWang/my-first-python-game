@@ -1,54 +1,15 @@
-# import pygame
-
-# pygame.init()
-
-
-
-
-
-# SCREEN_WIDTH = 1000
-# SCREEN_HEIGHT = 600
-
-# screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-# pygame.display.set_caption("Brawler")
-
-
-# bg_image = pygame.image.load("brawler game/Assets/images/background/background.jpg").convert_alpha()
-
-
-# def draw_bg():
-#     scaled_bg = pygame.transform.scale(bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
-#     screen.blit(scaled_bg, (0, 0))
-
-
-# run = True
-# while run:
-
-
-
-#     draw_bg()
-
-
-#     for event in pygame.event.get():
-#         if event.type == pygame.QUIT:
-#             run = False
-
-
-
-#     pygame.display.update()
-
-# pygame.quit()
-
-#________________________
-
 import pygame
 
 pygame.init()
 
+
+regenerated = False
 laser = False
 fire  = False
 blade = False
 punch = False
+
+
 
 # creating game window
 SCREEN_WIDTH = 1000
@@ -64,12 +25,12 @@ bg_image = pygame.image.load("brawler game/Assets/images/background/background.j
 player1_image = pygame.image.load("brawler game/Assets/images/players/player1.png").convert_alpha()
 player1_image = pygame.transform.scale(player1_image, (100, 100))
 player1_rect = player1_image.get_rect(midbottom=(SCREEN_WIDTH // 4, SCREEN_HEIGHT - 10))
-player1_lives = 3000  # initial number of livesm
+player1_lives = 3 # initial number of livesm
 
 player2_image = pygame.image.load("brawler game/Assets/images/players/player2.png").convert_alpha()
 player2_image = pygame.transform.scale(player2_image, (100, 100))
 player2_rect = player2_image.get_rect(midbottom=(3 * SCREEN_WIDTH // 4, SCREEN_HEIGHT - 10))
-player2_lives = 3000
+player2_lives = 3
 
 laser_image = pygame.image.load("brawler game/Assets/images/laser.png").convert_alpha()
 laser_image = pygame.transform.scale(laser_image, (100,50))
@@ -89,18 +50,10 @@ punch_rect = punch_image.get_rect(midbottom=(1000,-1000))
 
 
 
-
-#gameoverP1_image = pygame.image.load("brawler game/Assets/images/player1gameover.png").convert_alpha()
-
-
 # function for drawing background
 def draw_bg():
     scaled_bg = pygame.transform.scale(bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
     screen.blit(scaled_bg, (0, 0))
-
-# def draw_gameoverP1():
-#     scaled_gameoverP1 = pygame.transform.scale(bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
-#     screen.blit(scaled_gameoverP1, (0, 0))
 
 #drawing lives for players
 
@@ -155,7 +108,6 @@ while run:
         
     draw_player2()
 
-    
     draw_laser()
     if laser == True:
         laser_rect.move_ip(-20,0)
@@ -195,25 +147,40 @@ while run:
    
    #player live count
     font = pygame.font.Font(None, 36)
-    lives_text = font.render(f"Player One Lives: {player1_lives}", True, (255, 255, 255))
+    lives_text = font.render(f"Player One Lives: {player1_lives}", True, (0, 0, 255))
     screen.blit(lives_text, (SCREEN_WIDTH - 1000, 0))
 
-    if player1_lives == 0:
-        player1_lives = 3
+
+
+    # check if player 1 needs to regenerate health
+    if player1_lives == 0 and not regenerated:
+        regenerated = True
 
         player1_image = pygame.image.load("brawler game/Assets/images/players/player1rage.png").convert_alpha()
         player1_image = pygame.transform.scale(player1_image, (100, 100))
         player1_rect = player1_image.get_rect(midbottom=(SCREEN_WIDTH // 4, SCREEN_HEIGHT - 10))
+        player1_lives = 3
+
+        if blade_rect.colliderect(player1_rect):
+            player1_lives -= 1
+
+        if laser_rect.colliderect(player1_rect):
+            player1_lives -= 1
+
+    if player1_lives == 0:
+        pygame.quit()
 
 
-
-
-    lives_text = font.render(f"Player Two Lives: {player2_lives}", True, (255, 255, 255))
+    font = pygame.font.Font(None, 36)
+    lives_text = font.render(f"Player Two Lives: {player2_lives}", True, (225, 0, 0))
     screen.blit(lives_text, (SCREEN_WIDTH - 500, 0))
 
     if player2_lives == 0:
-        pygame.quit()
+        player2_lives = 3
 
+        player2_image = pygame.image.load("brawler game/Assets/images/players/player2rage.jpeg").convert_alpha()
+        player2_image = pygame.transform.scale(player2_image, (100, 100))
+        player2_rect = player2_image.get_rect(midbottom=(3 * SCREEN_WIDTH // 4, SCREEN_HEIGHT - 10))
     
 
     # handle events
